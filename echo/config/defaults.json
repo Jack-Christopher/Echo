@@ -1,0 +1,151 @@
+{
+  "hotkey": "win+space",
+  "fuzzy_threshold": 85,
+  "voice_confirmations": true,
+  "always_listening": false,
+  "search_engine_template": "https://www.google.com/search?q={query}",
+  "browser": "brave",
+  "browser_path": "",
+  "brave_path": "",
+  "preferred_volume": 50,
+  "whisper_model": "small",
+  "whisper_model_path": "",
+  "whisper_beam_size": 8,
+  "whisper_best_of": 5,
+  "whisper_threads": 0,
+  "whisper_use_prompt": true,
+  "websites": {
+    "youtube": {
+      "url": "https://www.youtube.com",
+      "opener": "browser"
+    },
+    "whatsapp": {
+      "url": "https://web.whatsapp.com",
+      "opener": "browser"
+    },
+    "gmail": {
+      "url": "https://mail.google.com",
+      "opener": "browser"
+    },
+    "gemini": {
+      "url": "https://gemini.google.com/app",
+      "opener": "browser"
+    },
+    "okru": {
+      "url": "https://ok.ru/video",
+      "opener": "browser"
+    }
+  },
+  "link_handlers": {
+    "http": { "app": "browser" },
+    "https": { "app": "browser" },
+    "ftp": { "app": "browser" },
+    "ftps": { "app": "browser" },
+    "mailto": { "app": "shell" },
+    "file": { "app": "shell" }
+  },
+  "custom_site_searches": [
+    {
+      "id": "okru_serie_exact",
+      "label": "Serie exacta OK.ru (site:)",
+      "match": "exact",
+      "priority": 205,
+      "terms": [
+        "serie breaking bad",
+        "serie stranger things",
+        "serie los sopranos"
+      ],
+      "strip_terms": false,
+      "resolve_mode": "site",
+      "site_domain": "m.ok.ru"
+    },
+    {
+      "id": "okru_pelicula",
+      "label": "Peliculas OK.ru (site:)",
+      "match": "leading",
+      "priority": 160,
+      "terms": ["pelicula", "película", "peli", "film", "movie"],
+      "strip_terms": true,
+      "resolve_mode": "site",
+      "site_domain": "m.ok.ru"
+    },
+    {
+      "id": "cuevana",
+      "label": "Cuevana",
+      "match": "leading",
+      "priority": 158,
+      "terms": ["cuevana"],
+      "strip_terms": true,
+      "resolve_mode": "template",
+      "template": "https://cuevanapro.org/search?s={query}"
+    },
+    {
+      "id": "okru_serie",
+      "label": "Series OK.ru (site:)",
+      "match": "leading",
+      "priority": 155,
+      "terms": ["serie", "series", "temporada", "episodio"],
+      "strip_terms": true,
+      "resolve_mode": "site",
+      "site_domain": "m.ok.ru"
+    }
+  ],
+  "search_routes": [
+    {
+      "id": "video",
+      "label": "Videos YouTube",
+      "match": "leading",
+      "priority": 130,
+      "terms": ["video", "videotutorial", "tutorial", "ver en youtube"],
+      "strip_terms": true,
+      "resolve_mode": "template",
+      "template": "https://www.youtube.com/results?search_query={query}"
+    },
+    {
+      "id": "receta",
+      "label": "Recetas Google",
+      "match": "leading",
+      "priority": 120,
+      "terms": ["receta", "recetas", "cocinar", "cocina", "ingredientes"],
+      "strip_terms": true,
+      "resolve_mode": "template",
+      "template": "https://www.google.com/search?q={query}"
+    },
+    {
+      "id": "gemini",
+      "label": "Gemini",
+      "match": "leading",
+      "priority": 110,
+      "terms": ["gemini", "pregunta gemini", "ia gemini"],
+      "strip_terms": true,
+      "resolve_mode": "template",
+      "template": "https://gemini.google.com/app?q={query}"
+    },
+    {
+      "id": "musica",
+      "label": "Musica YouTube",
+      "match": "leading",
+      "priority": 100,
+      "terms": ["musica", "cancion", "playlist"],
+      "strip_terms": true,
+      "resolve_mode": "template",
+      "template": "https://www.youtube.com/results?search_query={query}"
+    },
+    {
+      "id": "general",
+      "label": "Busqueda general",
+      "match": "fallback",
+      "priority": 0,
+      "terms": [],
+      "resolve_mode": "template",
+      "template": "https://www.google.com/search?q={query}"
+    }
+  ],
+  "folders": {
+    "descargas": "downloads",
+    "documentos": "documents"
+  },
+  "series": [],
+  "routines": {},
+  "reminders": []
+}
