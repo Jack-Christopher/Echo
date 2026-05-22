@@ -21,7 +21,23 @@ def _configure_windows_dpi() -> None:
         pass
 
 
+def _configure_stdio_encoding() -> None:
+    """Avoid UnicodeEncodeError when stdout uses cp1252 (Task Scheduler / log redirect)."""
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        if stream is None or not hasattr(stream, "reconfigure"):
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            try:
+                stream.reconfigure(errors="replace")
+            except Exception:
+                pass
+
+
 _configure_windows_dpi()
+_configure_stdio_encoding()
 
 from PySide6.QtWidgets import QApplication
 

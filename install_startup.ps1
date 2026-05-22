@@ -1,13 +1,22 @@
-# Register Echo to run at user logon via Task Scheduler
+# Register Echo to run at user logon via Task Scheduler.
+# Uses run_echo_logon.bat (venv python, startup log, error window stays open).
 $ErrorActionPreference = "Stop"
-$Root = $PSScriptRoot
-$Python = (Get-Command python -ErrorAction SilentlyContinue).Source
-if (-not $Python) {
-    $Python = Join-Path $Root ".venv\Scripts\python.exe"
+$Root = (Resolve-Path $PSScriptRoot).Path
+$Launcher = Join-Path $Root "run_echo_logon.bat"
+if (-not (Test-Path -LiteralPath $Launcher)) {
+    throw "Missing launcher: $Launcher"
 }
-$Main = Join-Path $Root "echo\main.py"
-$Action = New-ScheduledTaskAction -Execute $Python -Argument "-m echo.main" -WorkingDirectory $Root
+
+$Action = New-ScheduledTaskAction -Execute $Launcher -WorkingDirectory $Root
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
-$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-Register-ScheduledTask -TaskName "Echo" -Action $Action -Trigger $Trigger -Settings $Settings -Force
+$Settings = New-ScheduledTaskSettingsSet `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -ExecutionTimeLimit (New-TimeSpan -Hours 0)
+$Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Limited
+
+Register-ScheduledTask -TaskName "Echo" -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal -Force
 Write-Host "Scheduled task 'Echo' registered."
+Write-Host "  Launcher: $Launcher"
+Write-Host "  Delay: 20s in run_echo_logon.bat (desktop / OneDrive ready)"
+Write-Host "  Log on failure: %LOCALAPPDATA%\Echo\logs\startup-last.log"

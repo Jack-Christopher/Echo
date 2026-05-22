@@ -43,6 +43,8 @@ python -m echo.main
 .\install_startup.ps1
 ```
 
+Uses `run_echo_logon.bat` (same venv as `run_echo.bat`), waits 20s after logon, and logs to `%LOCALAPPDATA%\Echo\logs\startup-last.log`. If startup fails, a console window stays open with the log.
+
 Uninstall: `Unregister-ScheduledTask -TaskName "Echo" -Confirm:$false`
 
 ## Tests
