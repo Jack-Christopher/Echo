@@ -1,0 +1,9 @@
+[project]
+name = "echo-assistant"
+version = "0.1.0"
+description = "Lightweight offline Spanish voice desktop utility for Windows"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
