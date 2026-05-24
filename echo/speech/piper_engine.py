@@ -7,6 +7,8 @@ import tempfile
 import wave
 from pathlib import Path
 
+from echo.system.subprocess_win import no_window_kwargs
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -58,6 +60,7 @@ class PiperEngine:
             text=True,
             capture_output=True,
             check=True,
+            **no_window_kwargs(),
         )
         return output_path
 

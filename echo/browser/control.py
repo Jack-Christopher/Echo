@@ -134,9 +134,15 @@ def find_browser_path(config: EchoConfig) -> Path | None:
         p = Path(custom)
         if p.is_file():
             return p
+        logger.warning(
+            "Configured browser path not found (%s); trying default locations",
+            custom,
+        )
     spec = get_spec(config)
     for candidate in spec.default_paths:
         if candidate.is_file():
+            if custom:
+                logger.info("Using detected %s at %s", spec.label, candidate)
             return candidate
     return None
 
@@ -156,16 +162,27 @@ def is_running(config: EchoConfig) -> bool:
 
 def launch(url: str, config: EchoConfig) -> bool:
     """Open URL in a new tab (starts browser if needed)."""
+    url = url.strip()
+    if not url:
+        return False
     exe = find_browser_path(config)
     if not exe:
         logger.error("%s executable not found", get_spec(config).label)
         return False
     spec = get_spec(config)
-    subprocess.Popen(
-        [str(exe), spec.new_tab_flag, url],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    cmd = [str(exe), spec.new_tab_flag, url]
+    try:
+        subprocess.Popen(
+            cmd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError as e:
+        logger.error("Browser launch failed (%s): %s", " ".join(cmd), e)
+        return False
+    logger.info("Browser launch: %s", " ".join(cmd))
+    time.sleep(0.25)
+    focus(config)
     return True
 
 

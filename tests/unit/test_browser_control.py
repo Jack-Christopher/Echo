@@ -1,8 +1,10 @@
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
+from echo.browser import control
 from echo.browser.control import (
     BROWSER_IDS,
     find_browser_path,
@@ -36,7 +38,8 @@ def test_find_browser_path_custom(tmp_path):
 
 @pytest.mark.unit
 @patch("echo.browser.control.subprocess.Popen")
-def test_launch_chrome_new_tab(mock_popen, tmp_path):
+@patch("echo.browser.control.focus", return_value=True)
+def test_launch_chrome_new_tab(mock_focus, mock_popen, tmp_path):
     exe = tmp_path / "chrome.exe"
     exe.write_text("")
     config = EchoConfig(browser="chrome", browser_path=str(exe))
@@ -46,3 +49,29 @@ def test_launch_chrome_new_tab(mock_popen, tmp_path):
     assert args[0] == str(exe)
     assert args[1] == spec.new_tab_flag
     assert args[2] == "https://example.com"
+    kwargs = mock_popen.call_args[1]
+    assert "creationflags" not in kwargs
+    assert "startupinfo" not in kwargs
+    mock_focus.assert_called_once()
+
+
+@pytest.mark.unit
+@patch("echo.browser.control.subprocess.Popen", side_effect=OSError("denied"))
+def test_launch_returns_false_on_os_error(mock_popen, tmp_path):
+    exe = tmp_path / "brave.exe"
+    exe.write_text("")
+    config = EchoConfig(browser="brave", browser_path=str(exe))
+    assert launch("https://example.com", config) is False
+
+
+@pytest.mark.unit
+def test_find_browser_path_falls_back_when_custom_missing(tmp_path):
+    good = tmp_path / "brave.exe"
+    good.write_text("")
+    spec = replace(control.BROWSER_SPECS["brave"], default_paths=(good,))
+    config = EchoConfig(
+        browser="brave",
+        browser_path=str(tmp_path / "missing.exe"),
+    )
+    with patch.dict(control.BROWSER_SPECS, {"brave": spec}):
+        assert find_browser_path(config) == good

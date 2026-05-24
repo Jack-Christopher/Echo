@@ -43,7 +43,9 @@ python -m echo.main
 .\install_startup.ps1
 ```
 
-Uses `run_echo_logon.bat` (same venv as `run_echo.bat`), waits 20s after logon, and logs to `%LOCALAPPDATA%\Echo\logs\startup-last.log`. If startup fails, a console window stays open with the log.
+Uses `run_echo_logon.vbs` via Task Scheduler (hidden, no CMD window). Same venv as `run_echo.bat`. Waits 20s after logon and logs to `%LOCALAPPDATA%\Echo\logs\startup-last.log`.
+
+For manual testing: `wscript //nologo run_echo_logon.vbs` or `run_echo_logon.bat`.
 
 Uninstall: `Unregister-ScheduledTask -TaskName "Echo" -Confirm:$false`
 
@@ -61,7 +63,7 @@ pytest tests/ -v -m smoke
 - Fallback: `config.json` in project root
 - Defaults: `echo/config/defaults.json`
 
-Edit browser, sites, and hotkey in the tray → **Configuracion**. To quit: tray → **Salir**, or **right-click the blue orb** → **Salir**.
+Edit browser, sites, and hotkey in the tray → **Configuracion**. Set **Ruta al navegador** if Brave is not auto-detected (e.g. `C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe`). Leave empty if detection works. To quit: tray → **Salir**, or **right-click the blue orb** → **Salir**.
 
 ## Voice commands
 

@@ -10,6 +10,7 @@ from pathlib import Path
 
 from echo.config.schema import EchoConfig
 from echo.speech.whisper_prompt import build_initial_prompt
+from echo.system.subprocess_win import no_window_kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -140,6 +141,7 @@ class WhisperEngine:
             encoding="utf-8",
             errors="replace",
             check=False,
+            **no_window_kwargs(),
         )
         if result.returncode != 0:
             logger.warning(

@@ -11,8 +11,9 @@ def test_install_startup_script_exists():
     content = script.read_text(encoding="utf-8")
     assert "Register-ScheduledTask" in content
     assert "Echo" in content
-    assert "run_echo_logon.bat" in content
+    assert "run_echo_logon.vbs" in content
     assert "LogonType Interactive" in content
+    assert "wscript.exe" in content
 
 
 @pytest.mark.unit

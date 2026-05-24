@@ -23,12 +23,6 @@ if not defined PY set "PY=python"
 >> "%ECHO_STARTUP_LOG%" echo Python: %PY%
 
 set PYTHONIOENCODING=utf-8
-"%PY%" -m echo.main >> "%ECHO_STARTUP_LOG%" 2>&1
-set "ERR=!ERRORLEVEL!"
->> "%ECHO_STARTUP_LOG%" echo [%date% %time%] Exit code: !ERR!
-
-if !ERR! neq 0 (
-    start "Echo startup error" cmd /k "echo Echo failed with exit code !ERR!.& echo.& echo Log: %ECHO_STARTUP_LOG%& echo.& type "%ECHO_STARTUP_LOG%"& echo.& pause"
-    endlocal & exit /b !ERR!
-)
+REM Detach so this console closes; log remains in startup-last.log
+start "" /B "%PY%" -m echo.main >> "%ECHO_STARTUP_LOG%" 2>&1
 endlocal & exit /b 0

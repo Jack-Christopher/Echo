@@ -6,9 +6,8 @@ import logging
 import os
 import subprocess
 from pathlib import Path
-from urllib.parse import urlparse
 
-from echo.browser.control import find_browser_path, get_spec, launch
+from echo.browser.control import launch, open_url
 from echo.config.resources import (
     normalize_link_handlers,
     normalize_website_entry,
@@ -56,7 +55,7 @@ def open_website_alias(alias: str, config: EchoConfig) -> bool:
 def _open_with_app(url: str, config: EchoConfig, app: str, custom_path: str) -> bool:
     app = (app or "browser").lower()
     if app == "browser":
-        return launch(url, config)
+        return open_url(url, config)
     if app == "shell":
         try:
             os.startfile(url)  # noqa: S606 — Windows shell association
@@ -67,9 +66,17 @@ def _open_with_app(url: str, config: EchoConfig, app: str, custom_path: str) -> 
     if app == "custom" and custom_path:
         path = Path(custom_path)
         if path.is_file():
-            subprocess.Popen([str(path), url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            return True
+            try:
+                subprocess.Popen(
+                    [str(path), url],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                return True
+            except OSError as e:
+                logger.error("custom opener launch failed: %s", e)
+                return False
         logger.error("custom opener not found: %s", custom_path)
         return False
     logger.warning("unknown opener %s, using browser", app)
-    return launch(url, config)
+    return open_url(url, config)
