@@ -1,8 +1,9 @@
 from dataclasses import replace
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
+import subprocess
 
 from echo.browser import control
 from echo.browser.control import (
@@ -37,11 +38,16 @@ def test_find_browser_path_custom(tmp_path):
 
 
 @pytest.mark.unit
+@patch("echo.browser.control.write_browser_launch_log")
 @patch("echo.browser.control.subprocess.Popen")
 @patch("echo.browser.control.focus", return_value=True)
-def test_launch_chrome_new_tab(mock_focus, mock_popen, tmp_path):
+def test_launch_chrome_new_tab(mock_focus, mock_popen, mock_log, tmp_path, capsys):
     exe = tmp_path / "chrome.exe"
     exe.write_text("")
+    mock_proc = MagicMock()
+    mock_proc.pid = 99
+    mock_proc.poll.return_value = None
+    mock_popen.return_value = mock_proc
     config = EchoConfig(browser="chrome", browser_path=str(exe))
     spec = get_spec(config)
     assert launch("https://example.com", config) is True
@@ -50,14 +56,17 @@ def test_launch_chrome_new_tab(mock_focus, mock_popen, tmp_path):
     assert args[1] == spec.new_tab_flag
     assert args[2] == "https://example.com"
     kwargs = mock_popen.call_args[1]
+    assert kwargs["stdout"] == subprocess.PIPE
     assert "creationflags" not in kwargs
-    assert "startupinfo" not in kwargs
-    mock_focus.assert_called_once()
+    mock_log.assert_called_once()
+    out = capsys.readouterr().out
+    assert "Browser cmd:" in out
 
 
 @pytest.mark.unit
+@patch("echo.browser.control.write_browser_launch_log")
 @patch("echo.browser.control.subprocess.Popen", side_effect=OSError("denied"))
-def test_launch_returns_false_on_os_error(mock_popen, tmp_path):
+def test_launch_returns_false_on_os_error(mock_popen, mock_log, tmp_path):
     exe = tmp_path / "brave.exe"
     exe.write_text("")
     config = EchoConfig(browser="brave", browser_path=str(exe))

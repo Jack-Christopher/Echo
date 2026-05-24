@@ -11,6 +11,7 @@ from pathlib import Path
 
 import psutil
 
+from echo.browser.launch_log import write_browser_launch_log
 from echo.config.schema import EchoConfig
 
 logger = logging.getLogger(__name__)
@@ -168,21 +169,29 @@ def launch(url: str, config: EchoConfig) -> bool:
     exe = find_browser_path(config)
     if not exe:
         logger.error("%s executable not found", get_spec(config).label)
+        write_browser_launch_log([], error=f"{get_spec(config).label} executable not found")
         return False
     spec = get_spec(config)
     cmd = [str(exe), spec.new_tab_flag, url]
+    cmd_line = subprocess.list2cmdline(cmd)
+    print(f"[Echo] Browser cmd: {cmd_line}", flush=True)
     try:
-        subprocess.Popen(
+        proc = subprocess.Popen(
             cmd,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except OSError as e:
-        logger.error("Browser launch failed (%s): %s", " ".join(cmd), e)
+        logger.error("Browser launch failed (%s): %s", cmd_line, e)
+        write_browser_launch_log(cmd, error=str(e))
         return False
-    logger.info("Browser launch: %s", " ".join(cmd))
-    time.sleep(0.25)
-    focus(config)
+    time.sleep(0.35)
+    focus_ok = focus(config)
+    log_path = write_browser_launch_log(cmd, proc, focus_ok=focus_ok)
+    logger.info("Browser launch: %s (log: %s)", cmd_line, log_path)
     return True
 
 

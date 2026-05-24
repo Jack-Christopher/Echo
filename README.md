@@ -63,7 +63,7 @@ pytest tests/ -v -m smoke
 - Fallback: `config.json` in project root
 - Defaults: `echo/config/defaults.json`
 
-Edit browser, sites, and hotkey in the tray → **Configuracion**. Set **Ruta al navegador** if Brave is not auto-detected (e.g. `C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe`). Leave empty if detection works. To quit: tray → **Salir**, or **right-click the blue orb** → **Salir**.
+Edit browser, sites, and hotkey in the tray → **Configuracion**. Set **Ruta al navegador** if Brave is not auto-detected (e.g. `C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe`). Leave empty if detection works. Browser launch debug log: `%LOCALAPPDATA%\Echo\logs\browser-last.log`. To quit: tray → **Salir**, or **right-click the blue orb** → **Salir**.
 
 ## Voice commands
 
