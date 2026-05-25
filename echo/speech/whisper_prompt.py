@@ -6,11 +6,13 @@ from echo.config.schema import EchoConfig
 
 _CORE_PHRASES = (
     "Comandos en español de España.",
-    "abre youtube abre whatsapp abre gmail",
-    "busca pausa reproducir siguiente anterior silencio desilenciar",
+    "quiero ver pelicula serie",
+    "quiero aprender tutorial curso",
+    "quiero escuchar musica cancion artista",
+    "pausa reproducir siguiente anterior silencio desilenciar",
     "sube volumen baja volumen sube brillo baja brillo",
     "abre descargas abre documentos",
-    "iniciar dictado terminar dictado modo noche",
+    "iniciar dictado terminar dictado",
 )
 
 
