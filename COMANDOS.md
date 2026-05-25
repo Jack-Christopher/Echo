@@ -11,21 +11,123 @@ cd C:\Users\User\OneDrive\Desktop\Echo
 
 ## Qué verás en la terminal
 
-Ejemplo al decir *abre youtube*:
+Ejemplo al decir *quiero ver matrix*:
 
 ```
 [Echo] Escuchando... (mantén pulsado y habla)
 [Echo] Procesando audio...
 [Echo] Transcribiendo: C:\Users\...\tmpXXXX.wav
-[Echo] Texto entendido: "abre youtube"
-[Echo] Comando normalizado: "abre youtube"
-[Echo] Intent: open_website
-[Echo] Resultado: Abriendo youtube (ok)
+[Echo] Texto entendido: "quiero ver matrix"
+[Echo] Comando normalizado: "quiero ver matrix"
+[Echo] Intent: search_web
+[Echo] Ruta: Pelicula/Serie (OK.ru) -> https://www.google.com/search?q=matrix+site%3Am.ok.ru
+[Echo] Resultado: Pelicula/Serie (OK.ru): matrix (ok)
 ```
 
 - **Texto entendido** = lo que Whisper oyó (sin editar).
-- **Comando normalizado** = texto tras quitar acentos/rellenos (para comparar con la tabla).
+- **Comando normalizado** = texto tras quitar acentos/rellenos.
 - Si no coincide con ningún patrón: `Intent: unknown` y `No entendi`.
+
+---
+
+## Comandos por defecto
+
+Echo viene con **tres frases de búsqueda** y los **controles del dispositivo**. Sin más rutas ni sitios precargados (puedes añadir los que quieras en Configuración).
+
+### 1. Películas y series — `quiero ver ...`
+
+| Di | Acción |
+|-----|--------|
+| `quiero ver matrix` | Google `matrix site:m.ok.ru` |
+| `quiero ver serie breaking bad` | Google `serie breaking bad site:m.ok.ru` |
+| `quiero ver pelicula avatar` | Google `pelicula avatar site:m.ok.ru` |
+
+Usa el buscador (Google por defecto) con el operador `site:m.ok.ru` para encontrar el contenido en OK.ru.
+
+**Alternativa Cuevana:** edita la ruta `quiero_ver` en `%LOCALAPPDATA%\Echo\config.json` o en Configuración → Búsquedas:
+
+```json
+{
+  "id": "quiero_ver",
+  "resolve_mode": "template",
+  "template": "https://cuevanapro.org/search?s={query}",
+  "terms": ["quiero ver"],
+  "match": "leading",
+  "priority": 200,
+  "strip_terms": true
+}
+```
+
+### 2. Tutoriales y cursos — `quiero aprender ...`
+
+| Di | Acción |
+|-----|--------|
+| `quiero aprender python` | YouTube: `python` |
+| `quiero aprender a soldar` | YouTube: `a soldar` |
+| `quiero aprender ingles` | YouTube: `ingles` |
+
+URL: `https://www.youtube.com/results?search_query={query}`
+
+### 3. Música — `quiero escuchar ...`
+
+| Di | Acción |
+|-----|--------|
+| `quiero escuchar bad bunny` | YouTube Music: `bad bunny` |
+| `quiero escuchar rock clasico` | YouTube Music: `rock clasico` |
+| `quiero escuchar bohemian rhapsody` | YouTube Music: `bohemian rhapsody` |
+
+URL: `https://music.youtube.com/search?q={query}`
+
+### 4. Búsqueda general — `busca ...`
+
+Si no quieres usar los tres anteriores, queda el comodín:
+
+| Di | Acción |
+|-----|--------|
+| `busca recetas de pollo` | Google: `recetas de pollo` |
+| `busca clima madrid` | Google: `clima madrid` |
+
+---
+
+## Control del dispositivo
+
+### Volumen y brillo (pasos de 25)
+
+| Di | Acción |
+|----|--------|
+| `sube volumen` / `subir volumen` / `aumenta volumen` | +25 % volumen |
+| `baja volumen` / `reduce volumen` | -25 % volumen |
+| `sube brillo` | +25 % brillo |
+| `baja brillo` | -25 % brillo |
+| `volumen` | Sube volumen (sin verbo = sube) |
+| `brillo` | Sube brillo |
+
+### Reproductor (teclas multimedia)
+
+| Di | Acción |
+|----|--------|
+| `pausa` | Pausar |
+| `reproducir` | Reproducir |
+| `siguiente` / `siguiente video` | Siguiente |
+| `anterior` | Anterior |
+| `silencio` | Silenciar |
+| `desilenciar` | Quitar silencio |
+
+### Carpetas
+
+| Di | Acción |
+|----|--------|
+| `abre descargas` | Abre Descargas |
+| `abre documentos` | Abre Documentos |
+
+### Dictado
+
+| Di | Acción |
+|----|--------|
+| `iniciar dictado` / `empezar dictado` / `activar dictado` | Modo dictado ON |
+| `terminar dictado` / `finalizar dictado` / `parar dictado` | Modo dictado OFF |
+
+Con dictado activo, cualquier otra frase se escribe como texto.
 
 ---
 
@@ -42,162 +144,13 @@ En **Configuracion** (bandeja o clic derecho en el círculo azul) elige:
 | Opera | `opera.exe` |
 | Opera GX | `opera.exe` (carpeta Opera GX) |
 
-Campo **Ruta al .exe**: solo si no se detecta solo (ej. `C:\Program Files\Google\Chrome\Application\chrome.exe`).
+Campo **Ruta al .exe**: solo si no se detecta solo.
 
 ### Cómo Echo abre pestañas
 
-1. **Nueva pestaña por línea de comandos** (lo principal):
-   - Chromium (Brave, Chrome, Edge, Opera): `navegador.exe --new-tab https://...`
-   - Firefox: `firefox.exe -new-tab https://...`
-   - Si el navegador ya está abierto, Windows suele reutilizar la ventana y añadir la pestaña.
-
-2. **Búsquedas** (`busca ...`): enfoca el navegador y usa **Ctrl+L** (barra de direcciones), escribe y Enter.
-
-3. **Reserva** si falla lo anterior: **Ctrl+T** (nueva pestaña vacía), escribe la URL y Enter.
-
----
-
-## Sitios web
-
-Alias por defecto en `echo/config/defaults.json`: `youtube`, `whatsapp`, `gmail`.
-
-| Di exactamente (o muy parecido) | Acción |
-|--------------------------------|--------|
-| `abre youtube` | Abre YouTube |
-| `abre whatsapp` | Abre WhatsApp Web |
-| `abre gmail` | Abre Gmail |
-| `abrir youtube` | Igual (variante) |
-| `quiero youtube` | Igual |
-| `pon youtube` | Igual |
-| `ve a youtube` | Igual |
-| `ir a gmail` | Igual |
-
-Puedes añadir más sitios en **Configuracion** (bandeja o clic derecho en el círculo). Luego funcionan como `abre <alias>`.
-
----
-
-## Buscar en la web (rutas configurables)
-
-Tras `busca ...` Echo elige destino según **Sitios custom** + **Rutas generales** (Configuracion → **Busquedas**). En terminal: `Ruta: ... -> URL`.
-
-| Di exactamente | Ruta por defecto |
-|----------------|------------------|
-| `busca pelicula matrix` | Google: `matrix site:m.ok.ru` |
-| `busca serie avatar` | Google: `avatar site:m.ok.ru` |
-| `busca serie breaking bad` | Google: `serie breaking bad site:m.ok.ru` |
-| `busca cuevana matrix` | Cuevana: `cuevanapro.org/search?s=matrix` |
-| `busca tutorial soldar` | YouTube |
-| `busca recetas pollo` | Google (recetas) |
-| `busca gemini que es python` | Gemini |
-| `busca clima madrid` | Google (fallback) |
-
-### Sitios custom (`custom_site_searches`)
-
-Para OK.ru y sitios similares usa **`resolve_mode": "site"`** + **`site_domain": "m.ok.ru"`** → busqueda en el motor por defecto con `texto site:m.ok.ru` al final.
-
-Para sitios con URL propia (Cuevana, etc.):
-
-```json
-{
-  "id": "cuevana",
-  "resolve_mode": "template",
-  "template": "https://cuevanapro.org/search?s={query}",
-  "terms": ["cuevana"],
-  "match": "leading",
-  "priority": 158
-}
-```
-
-### Tipos de regla (`match`)
-
-| match | Uso |
-|-------|-----|
-| `leading` | Empieza por: `pelicula`, `cuevana`, `receta`… |
-| `exact` | Frase completa: `serie breaking bad` |
-| `contains` | Contiene el termino |
-| `fallback` | Si nada mas coincide |
-
-| resolve_mode | Uso |
-|--------------|-----|
-| `site` | `{query} site:dominio` en `search_engine_template` |
-| `template` | URL directa con `{query}` |
-
-### Enlaces y protocolos (`link_handlers` + Sitios)
-
-Cada sitio puede definir **opener**:
-
-```json
-"gemini": { "url": "https://gemini.google.com/app", "opener": "browser" },
-"ftp_ejemplo": { "url": "ftp://servidor/carpeta", "opener": "browser" }
-```
-
-`link_handlers` define por protocolo: `http`, `https`, `ftp`, `mailto` → `browser` (navegador elegido), `shell` (app por defecto de Windows), o `custom` + ruta a un `.exe`.
-
----
-
-## Reproductor / pestaña activa (teclas multimedia)
-
-| Di exactamente | Acción |
-|----------------|--------|
-| `pausa` | Pausar |
-| `reproducir` | Reproducir |
-| `siguiente` | Siguiente pista |
-| `siguiente video` | Siguiente |
-| `anterior` | Anterior |
-| `silencio` | Silenciar |
-| `desilenciar` | Quitar silencio |
-
----
-
-## Volumen y brillo
-
-| Di exactamente | Acción |
-|----------------|--------|
-| `sube volumen` | Sube volumen |
-| `baja volumen` | Baja volumen |
-| `sube brillo` | Sube brillo |
-| `baja brillo` | Baja brillo |
-| `volumen` | Sube volumen (sin verbo = sube) |
-| `brillo` | Sube brillo |
-| `aumenta volumen` | Sube volumen |
-| `reduce brillo` | Baja brillo |
-
----
-
-## Carpetas de Windows
-
-| Di exactamente | Acción |
-|----------------|--------|
-| `abre descargas` | Abre Descargas |
-| `abre documentos` | Abre Documentos |
-| `abre downloads` | Descargas (inglés) |
-
----
-
-## Dictado (escribe lo que digas)
-
-| Di exactamente | Acción |
-|----------------|--------|
-| `iniciar dictado` | Modo dictado ON |
-| `empezar dictado` | Igual |
-| `activar dictado` | Igual |
-| `terminar dictado` | Modo dictado OFF |
-| `finalizar dictado` | Igual |
-| `parar dictado` | Igual |
-
-Con dictado activo, **cualquier otra frase** se escribe como texto (no ejecuta comandos), salvo las frases de *terminar dictado*.
-
----
-
-## Rutinas
-
-| Di exactamente | Acción |
-|----------------|--------|
-| `modo noche` | Brillo bajo, volumen bajo, abre YouTube relax (rutina por defecto) |
-| `rutina noche` | Igual |
-| `activar noche` | Igual |
-
-Otras rutinas solo si las defines en `config.json` → `routines`.
+1. **Nueva pestaña por CLI** (Chromium: `--new-tab`, Firefox: `-new-tab`).
+2. Si falla, **Ctrl+T** + escribe URL + Enter.
+3. Log de cada lanzamiento: `%LOCALAPPDATA%\Echo\logs\browser-last.log`.
 
 ---
 
@@ -205,12 +158,18 @@ Otras rutinas solo si las defines en `config.json` → `routines`.
 
 Separa con **y**, **luego** o **entonces**:
 
-| Di exactamente | Acción |
-|----------------|--------|
-| `abre youtube y pausa` | Abre YouTube y envía pausa |
-| `sube volumen luego abre gmail` | Dos pasos en orden |
+| Di | Acción |
+|----|--------|
+| `sube volumen y abre descargas` | Dos pasos en orden |
+| `quiero escuchar jazz y baja brillo` | Música + bajar brillo |
 
 Si una parte no se entiende, falla toda la cadena.
+
+---
+
+## Personalizar
+
+Configuración → pestaña **Búsquedas** para añadir más rutas (custom sites o templates). Pestaña **Sitios** para `abre <alias>` (vacío por defecto). Los cambios se guardan en `%LOCALAPPDATA%\Echo\config.json`.
 
 ---
 
@@ -220,18 +179,15 @@ En **Configuracion → Voz**:
 
 | Opcion | Recomendacion |
 |--------|----------------|
-| **Modelo Whisper** | **Small** (mucho mejor que Base). Al **Guardar**, Echo descarga el modelo si falta (sin `setup.ps1` manual). |
-| **Beam size** | **8** (mas precision, un poco mas lento). |
-| **Pista de comandos** | **Si** — sesga Whisper hacia frases como *abre youtube*, *busca*, etc. |
-
-Echo tambien **normaliza el audio** (quita silencios al inicio/fin y sube volumen) antes de transcribir.
+| **Modelo Whisper** | **Small** (precision); **Base** si la PC va lenta |
+| **Beam size** | **8** (mas precision) o **1-3** (mas rapido) |
+| **Pista de comandos** | **Si** — sesga Whisper hacia `quiero ver`, `quiero aprender`, etc. |
 
 ### Consejos al hablar
 
-1. **1–2 segundos** minimo, cerca del micro, sin musica de fondo fuerte.
-2. Mira **Texto entendido** en la terminal; si falla, repite mas despacio.
-3. Ruido o mic lejos → transcripcion vacia o texto incorrecto.
-4. Umbral fuzzy **85**: frases parecidas a las de la tabla aun pueden ejecutarse (p. ej. *abre yutub*).
+1. **1–2 segundos** mínimo, cerca del micro, sin música fuerte de fondo.
+2. Mira **Texto entendido** en la terminal; si falla, repite más despacio.
+3. Umbral fuzzy **85**: frases parecidas a las de la tabla aún pueden ejecutarse.
 
 ---
 
