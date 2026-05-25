@@ -22,20 +22,9 @@ class RoutineRunner:
     def run(self, name: str) -> bool:
         steps = self._config.routines.get(name)
         if not steps:
-            if name == "noche":
-                return self._default_noche()
             return False
         for step in steps:
             self._execute_step(step)
-        return True
-
-    def _default_noche(self) -> bool:
-        brightness.set_level(30)
-        volume.set_level(20)
-        url = self._config.websites.get(
-            "youtube", "https://www.youtube.com/results?search_query=relaxing+music"
-        )
-        open_resource(url, self._config)
         return True
 
     def _execute_step(self, step: dict) -> None:
