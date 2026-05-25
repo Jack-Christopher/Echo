@@ -8,8 +8,10 @@ from echo.speech.whisper_prompt import build_initial_prompt
 def test_prompt_includes_core_commands():
     cfg = EchoConfig.from_dict(load_default_dict())
     prompt = build_initial_prompt(cfg)
-    assert "abre youtube" in prompt
-    assert "busca" in prompt
+    assert "quiero ver" in prompt
+    assert "quiero aprender" in prompt
+    assert "quiero escuchar" in prompt
+    assert "sube volumen" in prompt
     assert "espanol" in prompt.lower() or "espa" in prompt.lower()
 
 

@@ -8,7 +8,8 @@ from echo.config.store import ConfigStore
 def test_load_defaults_when_no_files(config_store):
     cfg = config_store.load()
     assert config_store.active_source == "defaults"
-    assert "youtube" in cfg.websites
+    assert cfg.hotkey == "win+space"
+    assert any(r.get("id") == "quiero_ver" for r in cfg.search_routes)
 
 
 @pytest.mark.unit

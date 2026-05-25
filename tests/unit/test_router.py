@@ -1,6 +1,6 @@
 import pytest
 
-from echo.commands.intents import MediaControl, OpenWebsite, SearchWeb, Unknown
+from echo.commands.intents import Unknown
 from echo.commands.router import CommandRouter
 from echo.config.schema import EchoConfig, load_default_dict
 
@@ -14,10 +14,13 @@ def router():
 @pytest.mark.parametrize(
     "text,intent_name",
     [
-        ("abre youtube", "open_website"),
+        ("quiero ver matrix", "search_web"),
+        ("quiero aprender python", "search_web"),
+        ("quiero escuchar bad bunny", "search_web"),
         ("busca videos de carpinteria", "search_web"),
         ("pausa", "media_control"),
         ("sube volumen", "system_adjust"),
+        ("baja brillo", "system_adjust"),
         ("abre descargas", "open_folder"),
     ],
 )

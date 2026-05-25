@@ -7,10 +7,20 @@ from echo.config.store import ConfigStore
 
 
 @pytest.mark.unit
-def test_process_text_open(config_store):
+def test_process_text_volume(config_store):
     app = EchoApp(config_store)
-    with patch("echo.browser.brave.open_url") as mock:
-        result = app.process_text("abre youtube")
+    with patch("echo.system.volume.adjust", return_value=True) as mock:
+        result = app.process_text("sube volumen")
+        assert result.success
+        mock.assert_called_once()
+    assert app.state == AppState.IDLE
+
+
+@pytest.mark.unit
+def test_process_text_quiero_ver(config_store):
+    app = EchoApp(config_store)
+    with patch("echo.browser.navigation.search", return_value=True) as mock:
+        result = app.process_text("quiero ver matrix")
         assert result.success
         mock.assert_called_once()
     assert app.state == AppState.IDLE
