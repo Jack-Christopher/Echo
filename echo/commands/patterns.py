@@ -20,9 +20,10 @@ from echo.config.resources import normalize_website_entry, website_url
 from echo.config.schema import EchoConfig
 
 _OPEN_RE = re.compile(
-    r"^(?:abre|abrir|abreme|pon|poner|quiero|ir a|ve a|ve al|ir al)\s+(.+)$"
+    r"^(?:abre|abrir|abreme|pon|poner|ir a|ve a|ve al|ir al)\s+(.+)$"
 )
 _SEARCH_RE = re.compile(r"^(?:busca|buscar|search|googlea|google)\s+(.+)$")
+_QUIERO_RE = re.compile(r"^quiero\s+(ver|aprender|escuchar)\s+(.+)$")
 _ROUTINE_RE = re.compile(r"^(?:modo|rutina|activar)\s+(.+)$")
 _DICTATION_START_RE = re.compile(
     r"^(?:iniciar|empezar|activar)\s+(?:el\s+)?dictado$"
@@ -64,6 +65,16 @@ def match_patterns(text: str, config: EchoConfig) -> Intent | None:
     m = _DICTATION_START_RE.match(text)
     if m:
         return DictationToggle(enable=True)
+
+    m = _QUIERO_RE.match(text)
+    if m:
+        topic = m.group(2).strip()
+        resolved = resolve_search(text, config)
+        return SearchWeb(
+            query=topic,
+            url=resolved.url,
+            route_label=resolved.label,
+        )
 
     m = _SEARCH_RE.match(text)
     if m:
