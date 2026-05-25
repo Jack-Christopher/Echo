@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-_STEP = 0.1
+_STEP = 0.25
 
 
 def _get_interface():
