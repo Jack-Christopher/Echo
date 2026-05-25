@@ -17,14 +17,13 @@ from echo.config.resources import normalize_website_entry, website_url
 from echo.config.schema import EchoConfig
 
 _CANONICAL: list[tuple[str, str, dict]] = [
-    ("abre youtube", "open_website", {"alias": "youtube"}),
-    ("abre whatsapp", "open_website", {"alias": "whatsapp"}),
-    ("abre gmail", "open_website", {"alias": "gmail"}),
-    ("quiero youtube", "open_website", {"alias": "youtube"}),
-    ("pon youtube", "open_website", {"alias": "youtube"}),
     ("pausa", "media_control", {"action": "pause"}),
-    ("silencio", "media_control", {"action": "mute"}),
+    ("reproducir", "media_control", {"action": "play"}),
+    ("siguiente", "media_control", {"action": "next"}),
     ("siguiente video", "media_control", {"action": "next"}),
+    ("anterior", "media_control", {"action": "previous"}),
+    ("silencio", "media_control", {"action": "mute"}),
+    ("desilenciar", "media_control", {"action": "unmute"}),
     ("sube volumen", "system_adjust", {"target": "volume", "direction": "up"}),
     ("baja volumen", "system_adjust", {"target": "volume", "direction": "down"}),
     ("sube brillo", "system_adjust", {"target": "brightness", "direction": "up"}),
@@ -33,7 +32,6 @@ _CANONICAL: list[tuple[str, str, dict]] = [
     ("abre documentos", "open_folder", {"folder_key": "documentos"}),
     ("iniciar dictado", "dictation_toggle", {"enable": True}),
     ("terminar dictado", "dictation_toggle", {"enable": False}),
-    ("modo noche", "run_routine", {"routine_name": "noche"}),
 ]
 
 
@@ -42,7 +40,7 @@ def _build_phrase_index(config: EchoConfig) -> dict[str, tuple[str, dict]]:
     for phrase, kind, payload in _CANONICAL:
         index[phrase] = (kind, payload)
     for alias in config.websites:
-        for template in (f"abre {alias}", f"quiero {alias}", f"pon {alias}"):
+        for template in (f"abre {alias}", f"pon {alias}"):
             index[template] = ("open_website", {"alias": alias})
     return index
 
@@ -65,7 +63,7 @@ def _intent_from_match(kind: str, payload: dict, config: EchoConfig) -> Intent |
         return DictationToggle(enable=payload["enable"])
     elif kind == "run_routine":
         name = payload["routine_name"]
-        if name in config.routines or name == "noche":
+        if name in config.routines:
             return RunRoutine(routine_name=name)
     return None
 
