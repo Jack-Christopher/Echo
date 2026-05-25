@@ -14,28 +14,7 @@
   "whisper_best_of": 5,
   "whisper_threads": 0,
   "whisper_use_prompt": true,
-  "websites": {
-    "youtube": {
-      "url": "https://www.youtube.com",
-      "opener": "browser"
-    },
-    "whatsapp": {
-      "url": "https://web.whatsapp.com",
-      "opener": "browser"
-    },
-    "gmail": {
-      "url": "https://mail.google.com",
-      "opener": "browser"
-    },
-    "gemini": {
-      "url": "https://gemini.google.com/app",
-      "opener": "browser"
-    },
-    "okru": {
-      "url": "https://ok.ru/video",
-      "opener": "browser"
-    }
-  },
+  "websites": {},
   "link_handlers": {
     "http": { "app": "browser" },
     "https": { "app": "browser" },
@@ -44,92 +23,37 @@
     "mailto": { "app": "shell" },
     "file": { "app": "shell" }
   },
-  "custom_site_searches": [
-    {
-      "id": "okru_serie_exact",
-      "label": "Serie exacta OK.ru (site:)",
-      "match": "exact",
-      "priority": 205,
-      "terms": [
-        "serie breaking bad",
-        "serie stranger things",
-        "serie los sopranos"
-      ],
-      "strip_terms": false,
-      "resolve_mode": "site",
-      "site_domain": "m.ok.ru"
-    },
-    {
-      "id": "okru_pelicula",
-      "label": "Peliculas OK.ru (site:)",
-      "match": "leading",
-      "priority": 160,
-      "terms": ["pelicula", "película", "peli", "film", "movie"],
-      "strip_terms": true,
-      "resolve_mode": "site",
-      "site_domain": "m.ok.ru"
-    },
-    {
-      "id": "cuevana",
-      "label": "Cuevana",
-      "match": "leading",
-      "priority": 158,
-      "terms": ["cuevana"],
-      "strip_terms": true,
-      "resolve_mode": "template",
-      "template": "https://cuevanapro.org/search?s={query}"
-    },
-    {
-      "id": "okru_serie",
-      "label": "Series OK.ru (site:)",
-      "match": "leading",
-      "priority": 155,
-      "terms": ["serie", "series", "temporada", "episodio"],
-      "strip_terms": true,
-      "resolve_mode": "site",
-      "site_domain": "m.ok.ru"
-    }
-  ],
+  "custom_site_searches": [],
   "search_routes": [
     {
-      "id": "video",
-      "label": "Videos YouTube",
+      "id": "quiero_ver",
+      "label": "Pelicula/Serie (OK.ru)",
       "match": "leading",
-      "priority": 130,
-      "terms": ["video", "videotutorial", "tutorial", "ver en youtube"],
+      "priority": 200,
+      "terms": ["quiero ver"],
+      "strip_terms": true,
+      "resolve_mode": "site",
+      "site_domain": "m.ok.ru"
+    },
+    {
+      "id": "quiero_aprender",
+      "label": "Tutorial (YouTube)",
+      "match": "leading",
+      "priority": 200,
+      "terms": ["quiero aprender"],
       "strip_terms": true,
       "resolve_mode": "template",
       "template": "https://www.youtube.com/results?search_query={query}"
     },
     {
-      "id": "receta",
-      "label": "Recetas Google",
+      "id": "quiero_escuchar",
+      "label": "Musica (YouTube Music)",
       "match": "leading",
-      "priority": 120,
-      "terms": ["receta", "recetas", "cocinar", "cocina", "ingredientes"],
+      "priority": 200,
+      "terms": ["quiero escuchar"],
       "strip_terms": true,
       "resolve_mode": "template",
-      "template": "https://www.google.com/search?q={query}"
-    },
-    {
-      "id": "gemini",
-      "label": "Gemini",
-      "match": "leading",
-      "priority": 110,
-      "terms": ["gemini", "pregunta gemini", "ia gemini"],
-      "strip_terms": true,
-      "resolve_mode": "template",
-      "template": "https://gemini.google.com/app?q={query}"
-    },
-    {
-      "id": "musica",
-      "label": "Musica YouTube",
-      "match": "leading",
-      "priority": 100,
-      "terms": ["musica", "cancion", "playlist"],
-      "strip_terms": true,
-      "resolve_mode": "template",
-      "template": "https://www.youtube.com/results?search_query={query}"
+      "template": "https://music.youtube.com/search?q={query}"
     },
     {
       "id": "general",
