@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-_STEP = 10
+_STEP = 25
 
 
 def adjust(direction: str) -> bool:
